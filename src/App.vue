@@ -1,17 +1,15 @@
 <style scoped>
-  div.app {
-    max-width:1000px;
-    margin:auto;
-    font-family: sans-serif;
-  }
+div.app {
+  max-width: 1000px;
+  margin: auto;
+  border-radius: 8px;
+  font-family: sans-serif;
+}
 </style>
 
 <template>
   <div class="app">
     <NavBar />
-
-    <br />
-
     <Main />
   </div>
 </template>
