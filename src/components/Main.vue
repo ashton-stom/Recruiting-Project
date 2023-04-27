@@ -20,13 +20,13 @@
       </tbody>
     </table>
     <Modal v-if="this.newGuestModalFormIsVisible == true" :onClose="this.closeNewGuestModalForm" title="Add Guest">
-      <NewGuestForm :addGuest="this.addGuest" />
+      <NewGuestForm :isLoading="isLoading" :addGuest="this.addGuest" />
     </Modal>
     <Modal v-if="this.deletedGuest" :onClose="this.cancelDelete" title="Delete Guest?">
-      <DeleteGuestConfirmation :onConfirm="this.deleteGuest" :onCancel="this.cancelDelete" />
+      <DeleteGuestConfirmation :isLoading="isLoading" :onConfirm="this.deleteGuest" :onCancel="this.cancelDelete" />
     </Modal>
     <Modal v-if="this.selectedGuestToEdit" :onClose="this.cancelEdit" title="Edit Guest">
-      <EditGuestForm :guest="this.selectedGuestToEdit" :updateGuest="this.updateGuest"
+      <EditGuestForm :isLoading="isLoading" :guest="this.selectedGuestToEdit" :updateGuest="this.updateGuest"
         :key="this.selectedGuestToEdit ? this.selectedGuestToEdit.email : 0" :email="this.selectedGuestToEdit.email"
         :tickets="this.selectedGuestToEdit.tickets" />
     </Modal>
@@ -110,6 +110,7 @@ import EditGuestForm from './EditGuestForm.vue';
 // eslint-disable-next-line no-unused-vars
 const GuestRepository = require('../guest-repository');
 const guestRepository = new GuestRepository();
+const MAXGUESTS = 20;
 
 export default {
   components: {
@@ -130,6 +131,7 @@ export default {
       newGuestModalFormIsVisible: false,
       deletedGuest: null,
       selectedGuestToEdit: null,
+      isLoading: false
     };
   },
 
@@ -159,12 +161,14 @@ export default {
         return;
       }
       const totalGuests = this.guests.reduce((total, current) => total += current.tickets, 0)
-      if (totalGuests + parseInt(tickets) <= 20) {
+      if (totalGuests + parseInt(tickets) <= MAXGUESTS) {
         this.guests.push({ email: email, tickets: parseInt(tickets) });
-        this.closeNewGuestModalForm();
+        this.isLoading = true;
         await guestRepository.save(this.guests);
+        this.isLoading = false;
+        this.closeNewGuestModalForm();
       } else {
-        alert(`Max occupancy is 20 guests. Current attendance is ${totalGuests}, you can only add up to ${20 - totalGuests} tickets`)
+        alert(`Max occupancy is ${MAXGUESTS} guests. Current attendance is ${totalGuests}, you can only add up to ${MAXGUESTS - totalGuests} tickets`)
       }
     },
 
@@ -186,8 +190,8 @@ export default {
 
     async updateGuest(updatedGuest) {
       const totalGuests = this.guests.reduce((total, current) => total += current.tickets, 0)
-      if (totalGuests + parseInt(updatedGuest.tickets) - this.selectedGuestToEdit.tickets > 20) {
-        alert(`Max occupancy is 20 guests. Current attendance is ${totalGuests}, you can only add up to ${20 - totalGuests} tickets`);
+      if (totalGuests + parseInt(updatedGuest.tickets) - this.selectedGuestToEdit.tickets > MAXGUESTS) {
+        alert(`Max occupancy is ${MAXGUESTS} guests. Current attendance is ${totalGuests}, you can only add up to ${MAXGUESTS - totalGuests} tickets`);
         return;
       }
       this.guests = this.guests.map(guest => {
@@ -197,15 +201,19 @@ export default {
         return guest;
       });
 
+      this.isLoading = true;
       await guestRepository.save(this.guests);
+      this.isLoading = false;
       this.selectedGuestToEdit = null;
     },
 
     async deleteGuest() {
       const removeGuestIndex = this.guests.findIndex(guest => guest.email === this.deletedGuest.email);
       this.guests.splice(removeGuestIndex, 1);
-      this.deletedGuest = null;
+      this.isLoading = true;
       await guestRepository.save(this.guests);
+      this.isLoading = false;
+      this.deletedGuest = null;
     }
   }
 }

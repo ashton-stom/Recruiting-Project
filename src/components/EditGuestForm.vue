@@ -6,7 +6,7 @@
             <label>Tickets</label>
             <input name='tickets' type="number" v-model="ticketsInput" />
         </div>
-        <Button class="submit" :onclick="this.onSubmit">Submit</Button>
+        <Button class="submit" :onclick="this.onSubmit">{{ isLoading ? 'Loading...' : 'Submit' }}</Button>
     </form>
 </template>
 
@@ -55,12 +55,14 @@ export default {
         updateGuest: Function,
         email: String,
         tickets: Number,
-        guest: Object
+        guest: Object,
+        isLoading: Boolean
     },
 
     methods: {
         onSubmit(e) {
             e.preventDefault();
+            if(this.isLoading) return;
             this.updateGuest({ email: this.emailInput, tickets: parseInt(this.ticketsInput) });
         }
     }

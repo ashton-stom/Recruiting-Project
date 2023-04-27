@@ -1,17 +1,26 @@
 <template>
-    <div class="buttonContainer">
-        <Button :onclick="onConfirm">Yes</Button>
-        <Button :onclick="onCancel">No</Button>
+    <div class="container">
+        <div class="buttonContainer">
+            <Button :onclick="onConfirm">{{ isLoading ? 'Loading...' : 'Yes' }}</Button>
+            <Button v-if="!this.isLoading" :onclick="onCancel">No</Button>
+        </div>
     </div>
 </template>
 
 <style scoped>
+.container {
+    width: 100%;
+    background-color: #eeeeee;
+    display: flex;
+    justify-content: center;
+}
+
 .buttonContainer {
     display: flex;
-    width: 20%;
+    width: 30%;
     text-align: center;
-    margin: 0px auto 32px auto;
-    justify-content: space-between;
+    margin: 0px auto 24px auto;
+    justify-content: space-evenly;
 }
 
 Button {
@@ -29,7 +38,8 @@ export default {
 
     props: {
         onConfirm: Function,
-        onCancel: Function
+        onCancel: Function,
+        isLoading: Boolean
     }
 }
 </script>
