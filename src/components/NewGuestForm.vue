@@ -6,7 +6,7 @@
             <label>Tickets</label>
             <input name='tickets' type="number" v-model="tickets" min="1" />
         </div>
-        <button class="submit">Submit</button>
+        <button class="submit">{{ isLoading ? 'Loading...' : 'Submit' }}</button>
     </form>
 </template>
 
@@ -50,7 +50,8 @@ export default {
     },
 
     props: {
-        addGuest: Function
+        addGuest: Function,
+        isLoading: Boolean
     },
 
     methods: {
