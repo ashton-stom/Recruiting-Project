@@ -18,15 +18,15 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: #00000080;
     backdrop-filter: blur(2px);
 }
 
 .modalContent {
     display: flex;
     flex-flow: row wrap;
-    background-color: rgb(238, 238, 238);
-    width: 50%;
+    background-color: #eeeeee;
+    width: 40%;
     position: relative;
     top: 40%;
     transform: translateY(-50%);
@@ -43,6 +43,7 @@
 .closeX {
     text-align: right;
     position: absolute;
+    font-size: 20px;
     top: 4px;
     right: 4px;
     margin: 0px;

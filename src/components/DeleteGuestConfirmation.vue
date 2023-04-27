@@ -8,7 +8,7 @@
 <style scoped>
 .buttonContainer {
     display: flex;
-    width: 20%;
+    width: 30%;
     text-align: center;
     margin: 0px auto 32px auto;
     justify-content: space-between;
