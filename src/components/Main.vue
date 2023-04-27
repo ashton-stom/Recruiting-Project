@@ -110,6 +110,7 @@ import EditGuestForm from './EditGuestForm.vue';
 // eslint-disable-next-line no-unused-vars
 const GuestRepository = require('../guest-repository');
 const guestRepository = new GuestRepository();
+const MAXGUESTS = 20;
 
 export default {
   components: {
@@ -159,12 +160,12 @@ export default {
         return;
       }
       const totalGuests = this.guests.reduce((total, current) => total += current.tickets, 0)
-      if (totalGuests + parseInt(tickets) <= 20) {
+      if (totalGuests + parseInt(tickets) <= MAXGUESTS) {
         this.guests.push({ email: email, tickets: parseInt(tickets) });
         this.closeNewGuestModalForm();
         await guestRepository.save(this.guests);
       } else {
-        alert(`Max occupancy is 20 guests. Current attendance is ${totalGuests}, you can only add up to ${20 - totalGuests} tickets`)
+        alert(`Max occupancy is ${MAXGUESTS} guests. Current attendance is ${totalGuests}, you can only add up to ${MAXGUESTS - totalGuests} tickets`)
       }
     },
 
@@ -186,8 +187,8 @@ export default {
 
     async updateGuest(updatedGuest) {
       const totalGuests = this.guests.reduce((total, current) => total += current.tickets, 0)
-      if (totalGuests + parseInt(updatedGuest.tickets) - this.selectedGuestToEdit.tickets > 20) {
-        alert(`Max occupancy is 20 guests. Current attendance is ${totalGuests}, you can only add up to ${20 - totalGuests} tickets`);
+      if (totalGuests + parseInt(updatedGuest.tickets) - this.selectedGuestToEdit.tickets > MAXGUESTS) {
+        alert(`Max occupancy is ${MAXGUESTS} guests. Current attendance is ${totalGuests}, you can only add up to ${MAXGUESTS - totalGuests} tickets`);
         return;
       }
       this.guests = this.guests.map(guest => {
